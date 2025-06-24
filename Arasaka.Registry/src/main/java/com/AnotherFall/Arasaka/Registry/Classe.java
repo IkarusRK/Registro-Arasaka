@@ -1,0 +1,4 @@
+package com.AnotherFall.Arasaka.Registry;
+public enum Classe {
+    HACKER, NEKO, ELFA, HUMANO, EXECUTIVA, CIVIL, MILITAR, PROCURADO, INIMIGO_DO_ESTADO, REALEZA, IMIGRANTE, REFUGIADO
+}
