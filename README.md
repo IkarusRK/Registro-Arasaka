@@ -1,5 +1,3 @@
-# codigo em MySQL para funcionamento do site
-
 CREATE DATABASE IF NOT EXISTS arasaka_db;
 USE arasaka_db;
 DROP TABLE IF EXISTS cidadao;
@@ -7,7 +5,7 @@ CREATE TABLE cidadao (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     idade INT NOT NULL,
-    hwidSoc VARCHAR(18) NOT NULL UNIQUE,
+    hwidSoc VARCHAR(25) NOT NULL UNIQUE,
     modeloSoc VARCHAR(100),
     criadoraSoc ENUM('ARASAKA', 'MILITECH', 'BIOTECH', 'HYDRA', 'TENZO') NOT NULL,
     classe ENUM('HACKER', 'NEKO', 'ELFA', 'HUMANO', 'EXECUTIVA', 'CIVIL', 'MILITAR', 'PROCURADO', 'CAÇADO', 'REALEZA', 'IMIGRANTE', 'REFUGIADO') NOT NULL,
