@@ -1,3 +1,5 @@
+## [Login: admin] [Senha: 1234]
+
 CREATE DATABASE IF NOT EXISTS arasaka_db;
 USE arasaka_db;
 DROP TABLE IF EXISTS cidadao;
