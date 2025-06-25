@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>ADM Terminal - Arasaka</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --arasaka-red: #ff003c;
+      --arasaka-black: #0a0a0a;
+      --arasaka-dark-gray: #1a1a1a;
+      --arasaka-light-gray: #e0e0e0;
+      --arasaka-medium-gray: #555555;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background-color: var(--arasaka-black);
+      color: var(--arasaka-light-gray);
+      background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 1px 2px;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .arasaka-corner-logo {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 100px;
+      height: auto;
+      z-index: 10;
+      opacity: 0.7;
+    }
+
+    .container {
+      max-width: 1400px; /* Aumentado para mais espaço */
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--arasaka-light-gray);
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--arasaka-red);
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    /* --- NOVOS ESTILOS PARA FILTROS --- */
+    .controls-container {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      background-color: var(--arasaka-dark-gray);
+      padding: 1rem;
+      border: 1px solid var(--arasaka-medium-gray);
+    }
+    
+    .search-input, .filter-select {
+      flex-grow: 1;
+      padding: 0.75rem;
+      background-color: var(--arasaka-black);
+      border: 1px solid var(--arasaka-medium-gray);
+      color: var(--arasaka-light-gray);
+      font-size: 1.1rem;
+      font-family: 'Rajdhani', sans-serif;
+      border-radius: 0;
+    }
+    .search-input:focus, .filter-select:focus {
+        outline: none;
+        border-color: var(--arasaka-red);
+    }
+    .filter-select {
+        flex-grow: 0;
+        min-width: 200px;
+    }
+    /* --- FIM DOS NOVOS ESTILOS --- */
+
+
+    .table-container {
+      background-color: var(--arasaka-dark-gray);
+      border: 1px solid var(--arasaka-medium-gray);
+      padding: 1.5rem;
+      box-shadow: 0 0 15px rgba(255, 0, 60, 0.2);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 1rem 0.75rem;
+      border-bottom: 1px solid var(--arasaka-medium-gray);
+      white-space: nowrap; /* Impede que o texto quebre linha */
+    }
+
+    th {
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--arasaka-red);
+    }
+    
+    tbody tr:hover {
+        background-color: rgba(255, 0, 60, 0.1);
+    }
+
+    .action-btn {
+      background: none;
+      border: 1px solid var(--arasaka-medium-gray);
+      color: var(--arasaka-light-gray);
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      transition: all 0.2s;
+    }
+    .action-btn.delete:hover {
+      background-color: var(--arasaka-red);
+      color: var(--arasaka-black);
+      border-color: var(--arasaka-red);
+    }
+    
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <img src="https://i.postimg.cc/QdNJVLYr/image.png" alt="Logo da Arasaka" class="arasaka-corner-logo">
+
+  <div class="container">
+    <div style="text-align: center;">
+      <h1>Painel de Gestão de Ativos</h1>
+    </div>
+
+    <!-- Barra de busca e filtros -->
+    <div class="controls-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar por Nome ou HWID do SOC...">
+        <select id="filter-select" class="filter-select">
+            <option value="ALL">Todas as Classes</option>
+            <!-- Opções de filtro serão inseridas aqui pelo JS -->
+        </select>
+    </div>
+
+    <div class="table-container">
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Classe</th>
+              <th>Nível de Acesso</th>
+              <th>HWID do SOC</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body">
+            <tr>
+              <td colspan="6" style="text-align:center; padding: 2rem;">A carregar dados do Datacenter Arasaka...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const tableBody = document.getElementById('admin-table-body');
+      const searchInput = document.getElementById('search-input');
+      const filterSelect = document.getElementById('filter-select');
+      
+      let allCidadaos = []; // Armazena a lista completa de cidadãos
+
+      // Popula o select de filtro
+      const classes = ["EXECUTIVA", "HACKER", "MILITAR", "CIVIL", "NEKO", "ELFA", "HUMANO", "PROCURADO", "CAÇADO", "REALEZA", "IMIGRANTE", "REFUGIADO"];
+      classes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c;
+        option.textContent = c.charAt(0) + c.slice(1).toLowerCase();
+        filterSelect.appendChild(option);
+      });
+
+      // Função para renderizar a tabela com os dados filtrados
+      function renderTable(data) {
+        tableBody.innerHTML = ''; // Limpa a tabela
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem;">Nenhum ativo corresponde aos critérios.</td></tr>';
+            return;
+        }
+        data.forEach(cidadao => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${cidadao.id}</td>
+            <td>${cidadao.nome}</td>
+            <td>${cidadao.classe}</td>
+            <td>${cidadao.nivelAcesso}</td>
+            <td style="font-family: 'Roboto Mono', monospace;">${cidadao.hwidSoc}</td>
+            <td>
+              <button class="action-btn edit" data-id="${cidadao.id}">Editar</button>
+              <button class="action-btn delete" data-id="${cidadao.id}">Excluir</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Função para aplicar os filtros e a busca
+      function applyFilters() {
+        const filterValue = filterSelect.value;
+        const searchValue = searchInput.value.toLowerCase();
+
+        let filteredData = allCidadaos;
+
+        // 1. Aplica o filtro de classe
+        if (filterValue !== 'ALL') {
+          filteredData = filteredData.filter(c => c.classe === filterValue);
+        }
+
+        // 2. Aplica o filtro de busca
+        if (searchValue) {
+          filteredData = filteredData.filter(c => 
+            c.nome.toLowerCase().includes(searchValue) ||
+            c.hwidSoc.toLowerCase().includes(searchValue)
+          );
+        }
+
+        renderTable(filteredData);
+      }
+
+      // Adiciona os event listeners para a busca e o filtro
+      searchInput.addEventListener('input', applyFilters);
+      filterSelect.addEventListener('change', applyFilters);
+
+      // Busca os dados iniciais ao carregar a página
+      try {
+        const response = await fetch('http://localhost:8080/cidadaos');
+        if (!response.ok) throw new Error('Falha ao carregar dados dos ativos.');
+        
+        allCidadaos = await response.json();
+        renderTable(allCidadaos);
+
+      } catch (error) {
+        console.error('Erro:', error);
+        tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--arasaka-red);">${error.message}</td></tr>`;
+      }
+    });
+
+    // Lógica para os botões de delete
+    document.getElementById('admin-table-body').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('delete')) {
+            const id = e.target.getAttribute('data-id');
+            const confirmado = confirm(`Tem a certeza que quer apagar o ativo com ID ${id}? Esta ação é irreversível.`);
+            if (confirmado) {
+                fetch(`http://localhost:8080/cidadaos/${id}`, { method: 'DELETE' })
+                  .then(response => {
+                    if (response.ok) {
+                        alert(`Ativo ${id} apagado com sucesso.`);
+                        window.location.reload(); // Recarrega a página para atualizar a lista
+                    } else {
+                        alert(`Falha ao apagar o ativo ${id}.`);
+                    }
+                  });
+            }
+        }
+    });
+  </script>
+</body>
+</html>
