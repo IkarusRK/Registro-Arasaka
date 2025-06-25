@@ -1,0 +1,94 @@
+CREATE DATABASE IF NOT EXISTS arasaka_db;
+USE arasaka_db;
+DROP TABLE IF EXISTS cidadao;
+CREATE TABLE cidadao (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    idade INT NOT NULL,
+    hwid_soc VARCHAR(25) NOT NULL UNIQUE,
+    modelo_soc VARCHAR(100),
+    criadora_soc ENUM('ARASAKA', 'MILITECH', 'BIOTECH', 'HYDRA', 'KANGTOO') NOT NULL,
+    classe ENUM('HACKER', 'NEKO', 'ELFA', 'HUMANO', 'EXECUTIVA', 'CIVIL', 'MILITAR', 'PROCURADO', 'CONTRATO_DE_CAÇADA', 'REALEZA', 'IMIGRANTE', 'REFUGIADO') NOT NULL,
+    nivel_acesso ENUM('PUBLICO', 'EMPRESARIAL', 'MILITAR', 'REALEZA') NOT NULL,
+    caminho_foto VARCHAR(255)
+);
+
+ALTER TABLE cidadao ADD COLUMN password VARCHAR(255) NULL;
+ALTER TABLE cidadao ADD COLUMN role VARCHAR(255) NULL;
+
+CREATE USER IF NOT EXISTS 'IkarusRK'@'%' IDENTIFIED BY '12345';
+GRANT ALL PRIVILEGES ON arasaka_db.* TO 'IkarusRK'@'%';
+FLUSH PRIVILEGES;
+
+select * from cidadao;
+
+INSERT INTO cidadao (nome, idade, hwid_soc, modelo_soc, criadora_soc, classe, nivel_acesso, caminho_foto) VALUES
+-- Executivos e Realeza
+('Katerina Volkov', 42, 'A4E9-C16F-8B2D-1C9E-C5A1', 'Imperator V9', 'ARASAKA', 'EXECUTIVA', 'REALEZA', 'https://i.pravatar.cc/150?u=1'),
+('Jian Li', 38, 'BEEF-FEED-C0DE-F00D-BEE2', 'Director-7', 'KANGTOO', 'EXECUTIVA', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=2'),
+('Marcus Thorne', 55, 'DEAD-BEEF-1337-CODE-BAD3', 'Patriarch G4', 'MILITECH', 'EXECUTIVA', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=3'),
+('Emir Al-Jamil', 45, 'FADE-D00D-FACE-B00K-FED4', 'Sultan-X', 'HYDRA', 'REALEZA', 'REALEZA', 'https://i.pravatar.cc/150?u=4'),
+
+-- Elfas (Nomes únicos e idades mais altas)
+('Amniriel Valeriana', 780, 'ELFA-AEAE-1123-5813-215', 'Lothlorien-Core', 'BIOTECH', 'ELFA', 'PUBLICO', 'https://i.pravatar.cc/150?u=5'),
+('Laerion Silvanus', 1230, 'ELFA-BEEF-2334-6109-896', 'Yggdrasil-Link', 'BIOTECH', 'ELFA', 'REALEZA', 'https://i.pravatar.cc/150?u=6'),
+('Faelivrin Whisperwind', 450, 'ELFA-C0DE-3455-8914-427', 'Glimmer-Weave', 'BIOTECH', 'ELFA', 'PUBLICO', 'https://i.pravatar.cc/150?u=7'),
+('Thaliondras Morningstar', 2100, 'ELFA-DEAD-5589-1442-338', 'Sun-Dial V2', 'BIOTECH', 'ELFA', 'REALEZA', 'https://i.pravatar.cc/150?u=8'),
+('Illyria Nightshade', 950, 'ELFA-FACE-8914-4236-479', 'Moon-Shadow', 'BIOTECH', 'ELFA', 'PUBLICO', 'https://i.pravatar.cc/150?u=9'),
+
+-- Nekos
+('Mika "Sparky" Sato', 21, 'NEKO-FEED-C0C0-A4B5-C6D7', 'Nekomata-S3', 'ARASAKA', 'NEKO', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=10'),
+('Kiko Meowstermind', 19, 'NEKO-BABE-D1E2-F3A4-B5C6', 'Cat-sEye-9', 'KANGTOO', 'NEKO', 'PUBLICO', 'https://i.pravatar.cc/150?u=11'),
+('Yoru "Shadow" Tanaka', 24, 'NEKO-1337-E4F5-A6B7-C8D9', 'Kage-Neko X', 'ARASAKA', 'NEKO', 'MILITAR', 'https://i.pravatar.cc/150?u=12'),
+
+-- Hackers (Netrunners)
+('ZeroCool', 28, 'HACK-ACDC-BEEF-CAFE-D00D', 'Cypher-X1', 'HYDRA', 'HACKER', 'PUBLICO', 'https://i.pravatar.cc/150?u=13'),
+('Nyx', 25, 'HACK-BADD-C0DE-DEAF-BEEF', 'Shadow-Runner', 'HYDRA', 'HACKER', 'PUBLICO', 'https://i.pravatar.cc/150?u=14'),
+('Glitch', 31, 'HACK-C0DE-FEED-F00D-FACE', 'ICE-Breaker 9000', 'MILITECH', 'HACKER', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=15'),
+('Trace', 22, 'HACK-DEAD-BEEF-CAFE-D00D', 'Packet-Wrangler', 'ARASAKA', 'HACKER', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=16'),
+
+-- Militares
+('Sgt. Eva Rostova', 32, 'MILI-BEEF-FEED-C0DE-F00D', 'Ares MK.VI', 'MILITECH', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=17'),
+('Rico "Stitch" Vargas', 29, 'MILI-DEAD-BEEF-1337-CODE', 'Warhound-2B', 'MILITECH', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=18'),
+('Cmdr. Ivan Petrov', 48, 'MILI-FADE-D00D-FACE-B00K', 'T-100 Titan', 'MILITECH', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=19'),
+('Jax "Breaker" Ironside', 35, 'MILI-FACE-FEED-C0C0-A4B5', 'Colossus', 'ARASAKA', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=20'),
+
+-- Civis
+('Maria Silva', 34, 'CIVL-BABE-D1E2-F3A4-B5C6', 'Omni-2', 'KANGTOO', 'CIVIL', 'PUBLICO', 'https://i.pravatar.cc/150?u=21'),
+('João Pereira', 52, 'CIVL-1337-E4F5-A6B7-C8D9', 'Generic-Link', 'KANGTOO', 'CIVIL', 'PUBLICO', 'https://i.pravatar.cc/150?u=22'),
+('Ana Costa', 27, 'CIVL-ACDC-BEEF-CAFE-D00D', 'City-Connect', 'KANGTOO', 'CIVIL', 'PUBLICO', 'https://i.pravatar.cc/150?u=23'),
+
+-- Procurados e contrato de caçadas (em aberto)
+('"Ghost"', 39, 'WNTD-BADD-C0DE-DEAF-BEEF', 'Scavenger-Mod', 'HYDRA', 'PROCURADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=24'),
+('Viper', 33, 'WNTD-C0DE-FEED-F00D-FACE', 'Scrap-Heap', 'HYDRA', 'PROCURADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=25'),
+('Morgan "Blackhand"', 62, 'HNTD-DEAD-BEEF-CAFE-D00D', 'Custom-Military', 'MILITECH', 'CONTRATO_DE_CAÇADA', 'MILITAR', 'https://i.pravatar.cc/150?u=26'),
+
+-- Imigrantes e Refugiados
+('Anya Sharma', 26, 'IMIG-FADE-D00D-FACE-B00K', 'Basic-SOC', 'KANGTOO', 'IMIGRANTE', 'PUBLICO', 'https://i.pravatar.cc/150?u=27'),
+('Kenji Takahashi', 41, 'RFGD-FACE-FEED-C0C0-A4B5', 'None', 'KANGTOO', 'REFUGIADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=28'),
+
+-- Preenchimento Adicional
+('Executor-7', 5, 'EXEC-0007-0000-0000-00A1', 'Executor Unit', 'ARASAKA', 'EXECUTIVA', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=29'),
+('Test Subject 4B', 22, 'BTEC-4B00-1122-3344-5566', 'Bio-Synth 2', 'BIOTECH', 'HUMANO', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=30'),
+('Ronin', 37, 'HNTD-RONN-DEAD-BEEF-C0DE', 'Kenshin Mod', 'HYDRA', 'CONTRATO_DE_CAÇADA', 'PUBLICO', 'https://i.pravatar.cc/150?u=31'),
+('Valeria "Vex" Nova', 29, 'HACK-VEXX-BEEF-FEED-C0DE', 'Go-Go-Ware', 'HYDRA', 'HACKER', 'PUBLICO', 'https://i.pravatar.cc/150?u=32'),
+('Leo "Lion" Schmidt', 45, 'MILI-LION-DEAD-BEEF-1337', 'Panzer-5', 'MILITECH', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=33'),
+('Sofia Rossi', 23, 'CIVL-SOFI-C0DE-DEAF-BEEF', 'Student-Link', 'KANGTOO', 'CIVIL', 'PUBLICO', 'https://i.pravatar.cc/150?u=34'),
+('"Oracle"', 33, 'HACK-ORCL-FEED-F00D-FACE', 'Sibyl-Mk2', 'HYDRA', 'HACKER', 'PUBLICO', 'https://i.pravatar.cc/150?u=35'),
+('Cinder', 28, 'WNTD-CIND-DEAD-BEEF-CAFE', 'Ash-Mod', 'HYDRA', 'PROCURADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=36'),
+('Lyra Starfall', 620, 'ELFA-LYRA-FADE-D00D-FACE', 'Starlight-Core', 'BIOTECH', 'ELFA', 'PUBLICO', 'https://i.pravatar.cc/150?u=37'),
+('Chairman Tanaka', 68, 'EXEC-TANA-FACE-FEED-C0C0', 'Shogun-X', 'ARASAKA', 'REALEZA', 'REALEZA', 'https://i.pravatar.cc/150?u=38'),
+('Yuki "Frost" Kimura', 20, 'NEKO-YUKI-BABE-D1E2-F3A4', 'Arctic-Neko', 'ARASAKA', 'NEKO', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=39'),
+('Asset 88', 18, 'PROP-8800-1337-E4F5-A6B7', 'Property-Chip', 'HYDRA', 'HUMANO', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=40'),
+('Rook', 31, 'HACK-ROOK-ACDC-BEEF-CAFE', 'Castle-Key', 'HYDRA', 'HACKER', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=41'),
+('Colonel Eva Nowak', 51, 'MILI-EVAN-BADD-C0DE-DEAF', 'Gryphon-X', 'MILITECH', 'MILITAR', 'MILITAR', 'https://i.pravatar.cc/150?u=42'),
+('Artur Pendragon II', 35, 'ROYL-ART2-C0DE-FEED-F00D', 'Excalibur-Link', 'KANGTOO', 'REALEZA', 'REALEZA', 'https://i.pravatar.cc/150?u=43'),
+('Elara', 25, 'IMIG-ELAR-DEAD-BEEF-CAFE', 'Voyager-1', 'KANGTOO', 'IMIGRANTE', 'PUBLICO', 'https://i.pravatar.cc/150?u=44'),
+('Subject Zero', 26, 'HNTD-ZERO-FADE-D00D-FACE', 'Omega-Protocol', 'BIOTECH', 'CONTRATO_DE_CAÇADA', 'MILITAR', 'https://i.pravatar.cc/150?u=45'),
+('Faelan Swiftarrow', 890, 'ELFA-FAEL-FACE-FEED-C0C0', 'Wind-Rider', 'BIOTECH', 'ELFA', 'PUBLICO', 'https://i.pravatar.cc/150?u=46'),
+('Mila "Imp" Petrova', 18, 'HACK-IMPP-BABE-D1E2-F3A4', 'Gremlin-ware', 'HYDRA', 'HACKER', 'PUBLICO', 'https://i.pravatar.cc/150?u=47'),
+('T-800 "Guardian"', 10, 'PROT-T800-1337-E4F5-A6B7', 'Guardian-Core', 'ARASAKA', 'MILITAR', 'EMPRESARIAL', 'https://i.pravatar.cc/150?u=48'),
+('Yara', 22, 'RFGD-YARA-ACDC-BEEF-CAFE', 'None', 'KANGTOO', 'REFUGIADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=49'),
+('Silas "Nomad" Kane', 44, 'PROW-SLSK-BADD-C0DE-DEAF', 'Wanderer-Rig', 'HYDRA', 'PROCURADO', 'PUBLICO', 'https://i.pravatar.cc/150?u=50'),
+('Lady Aveline', 41, 'ROYL-AVEL-C0DE-FEED-F00D', 'Regal-Connect', 'KANGTOO', 'REALEZA', 'REALEZA', 'https://i.pravatar.cc/150?u=51'),
+('Kenji "Oni"ro', 36, 'HNTD-ONIR-DEAD-BEEF-CAFE', 'Oni-Mask', 'HYDRA', 'CONTRATO_DE_CAÇADA', 'MILITAR', 'https://i.pravatar.cc/150?u=52');
